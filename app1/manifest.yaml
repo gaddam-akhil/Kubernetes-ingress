@@ -41,3 +41,28 @@ spec:
   - protocol: TCP
     port: 80 #sevice port (internal cluster IP)
     targetPort: 80      
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: app1
+  annotations:
+    alb.ingress.kubernetes.io/listen-ports: '[{"HTTPS": 443}]'
+    alb.ingress.kubernetes.io/certificate-arn: arn:aws:acm:us-east-1:601930231965:certificate/ecf1afd7-f9c8-4e78-9f0f-446324f845ed
+    alb.ingress.kubernetes.io/frontend-nlb-scheme: internet-facing
+    alb.ingress.kubernetes.io/tags: Environment=dev,project=roboshop
+    alb.ingress.kubernetes.io/target-type: ip
+spec:
+  ingressClassName: alb
+  rules:
+  - host: "app1.gaddam.online"
+    http:
+      paths:
+      - pathType: Prefix
+        path: "/"
+        backend:
+          service:
+            name: app1
+            port:
+              number: 80
+ 
